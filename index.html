@@ -172,11 +172,18 @@
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .preview-section {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: sticky;
+            top: 20px;
         }
 
         .phone-mockup {
@@ -219,6 +226,9 @@
             justify-content: space-between;
             padding: 0 20px;
             font-size: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            z-index: 5;
         }
 
         .app-preview {
@@ -229,6 +239,35 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+        }
+
+        .app-preview.loading {
+            background: white;
+        }
+
+        .website-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            display: none;
+        }
+
+        .website-iframe.active {
+            display: block;
+        }
+
+        .splash-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .splash-screen.hidden {
+            display: none;
         }
 
         .app-icon-preview {
@@ -293,6 +332,36 @@
             opacity: 0.9;
         }
 
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .preview-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #856404;
+        }
+
         @media (max-width: 968px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -305,6 +374,7 @@
 
             .preview-section {
                 order: -1;
+                position: relative;
             }
         }
 
@@ -335,7 +405,7 @@
             <!-- Form Section -->
             <div class="form-section">
                 <h2>Create Your App</h2>
-                <p>Fill in the details below to generate your mobile app</p>
+                <p>Fill in the details below to preview your mobile app</p>
 
                 <form id="appForm">
                     <div class="form-group">
@@ -397,7 +467,7 @@
                         <input type="email" id="email" placeholder="your@email.com" required>
                     </div>
 
-                    <button type="submit" class="submit-btn">🎉 Create My App</button>
+                    <button type="submit" class="submit-btn" id="submitBtn">📱 Preview My App</button>
                 </form>
             </div>
 
@@ -410,33 +480,45 @@
                             <span>9:41</span>
                             <span>📶 📡 🔋</span>
                         </div>
-                        <div class="app-preview">
-                            <div class="app-icon-preview" id="iconPreview">📱</div>
-                            <div class="app-name-preview" id="namePreview">My Awesome App</div>
-                            <div class="app-url-preview" id="urlPreview">yourwebsite.com</div>
-                            
-                            <div class="preview-features">
-                                <div class="preview-feature">
-                                    <div class="preview-feature-icon" style="background: #e3f2fd; color: #2196f3;">⚡</div>
-                                    <span>Lightning Fast Loading</span>
-                                </div>
-                                <div class="preview-feature">
-                                    <div class="preview-feature-icon" style="background: #f3e5f5; color: #9c27b0;">📱</div>
-                                    <span>Native App Experience</span>
-                                </div>
-                                <div class="preview-feature">
-                                    <div class="preview-feature-icon" style="background: #e8f5e9; color: #4caf50;">🔔</div>
-                                    <span>Push Notifications</span>
-                                </div>
-                                <div class="preview-feature">
-                                    <div class="preview-feature-icon" style="background: #fff3e0; color: #ff9800;">🎨</div>
-                                    <span>Custom Branding</span>
+                        <div class="app-preview" id="appPreview">
+                            <!-- Splash Screen (Initial State) -->
+                            <div class="splash-screen" id="splashScreen">
+                                <div class="app-icon-preview" id="iconPreview">📱</div>
+                                <div class="app-name-preview" id="namePreview">My Awesome App</div>
+                                <div class="app-url-preview" id="urlPreview">yourwebsite.com</div>
+                                
+                                <div class="preview-features">
+                                    <div class="preview-feature">
+                                        <div class="preview-feature-icon" style="background: #e3f2fd; color: #2196f3;">⚡</div>
+                                        <span>Lightning Fast Loading</span>
+                                    </div>
+                                    <div class="preview-feature">
+                                        <div class="preview-feature-icon" style="background: #f3e5f5; color: #9c27b0;">📱</div>
+                                        <span>Native App Experience</span>
+                                    </div>
+                                    <div class="preview-feature">
+                                        <div class="preview-feature-icon" style="background: #e8f5e9; color: #4caf50;">🔔</div>
+                                        <span>Push Notifications</span>
+                                    </div>
+                                    <div class="preview-feature">
+                                        <div class="preview-feature-icon" style="background: #fff3e0; color: #ff9800;">🎨</div>
+                                        <span>Custom Branding</span>
+                                    </div>
                                 </div>
                             </div>
+
+                            <!-- Loading State -->
+                            <div class="splash-screen hidden" id="loadingScreen">
+                                <div class="loading-spinner"></div>
+                                <div class="loading-text">Loading your website...</div>
+                            </div>
+
+                            <!-- Website Preview (iframe) -->
+                            <iframe id="websiteIframe" class="website-iframe"></iframe>
                         </div>
                     </div>
                 </div>
-                <p class="preview-label">✨ Live preview of your app</p>
+                <p class="preview-label" id="previewLabel">✨ Fill the form and click "Preview My App"</p>
             </div>
         </div>
     </div>
@@ -454,6 +536,11 @@
         const namePreview = document.getElementById('namePreview');
         const urlPreview = document.getElementById('urlPreview');
         const iconPreview = document.getElementById('iconPreview');
+        const splashScreen = document.getElementById('splashScreen');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const websiteIframe = document.getElementById('websiteIframe');
+        const previewLabel = document.getElementById('previewLabel');
+        const submitBtn = document.getElementById('submitBtn');
 
         appNameInput.addEventListener('input', (e) => {
             namePreview.textContent = e.target.value || 'My Awesome App';
@@ -488,13 +575,76 @@
             }
         });
 
-        // Form submission
+        // Form submission - Load website in iframe
         document.getElementById('appForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
+            const websiteUrl = websiteUrlInput.value.trim();
+            
+            if (!websiteUrl) {
+                alert('Please enter a valid website URL');
+                return;
+            }
+
+            // Ensure URL has protocol
+            let fullUrl = websiteUrl;
+            if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+                fullUrl = 'https://' + websiteUrl;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Loading Preview...';
+            splashScreen.classList.add('hidden');
+            loadingScreen.classList.remove('hidden');
+            websiteIframe.classList.remove('active');
+            previewLabel.textContent = '🌐 Loading your website in the app...';
+
+            // Load website in iframe
+            websiteIframe.src = fullUrl;
+
+            // Show website after loading (or timeout)
+            const loadTimeout = setTimeout(() => {
+                showWebsite();
+            }, 3000); // Show after 3 seconds regardless
+
+            websiteIframe.onload = () => {
+                clearTimeout(loadTimeout);
+                showWebsite();
+            };
+
+            websiteIframe.onerror = () => {
+                clearTimeout(loadTimeout);
+                alert('⚠️ Could not load website. Some websites block embedding in iframes for security reasons.');
+                resetPreview();
+            };
+
+            function showWebsite() {
+                loadingScreen.classList.add('hidden');
+                websiteIframe.classList.add('active');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ Preview Loaded!';
+                previewLabel.innerHTML = '🎉 <strong>This is how your app will look!</strong>';
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    submitBtn.textContent = '📱 Preview My App';
+                }, 3000);
+            }
+
+            function resetPreview() {
+                loadingScreen.classList.add('hidden');
+                splashScreen.classList.remove('hidden');
+                websiteIframe.classList.remove('active');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📱 Preview My App';
+                previewLabel.textContent = '✨ Fill the form and click "Preview My App"';
+            }
+
+            // Collect form data for future use
             const formData = {
                 appName: appNameInput.value,
-                websiteUrl: websiteUrlInput.value,
+                websiteUrl: fullUrl,
                 packageName: document.getElementById('packageName').value,
                 primaryColor: primaryColorInput.value,
                 secondaryColor: secondaryColorInput.value,
@@ -502,12 +652,9 @@
                 email: document.getElementById('email').value
             };
 
-            // For now, just show alert. Later, send to your backend
-            alert(`🎉 Thank you! We'll send your app to ${formData.email} soon!\n\nApp Details:\n- Name: ${formData.appName}\n- URL: ${formData.websiteUrl}\n- Platform: ${formData.platform}`);
-            
             console.log('Form Data:', formData);
             
-            // Here you would send this to your backend:
+            // TODO: Send to backend when ready
             // fetch('/api/create-app', {
             //     method: 'POST',
             //     headers: { 'Content-Type': 'application/json' },
