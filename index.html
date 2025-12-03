@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppForge - Turn Your Website Into a Mobile App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .form-section h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .form-section p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 14px 16px;
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-label:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .color-picker-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-input-wrapper input[type="color"] {
+            width: 60px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .color-input-wrapper input[type="text"] {
+            flex: 1;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phone-mockup {
+            width: 320px;
+            height: 650px;
+            background: #000;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            position: relative;
+        }
+
+        .phone-notch {
+            width: 120px;
+            height: 25px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 40px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-size: 0.75rem;
+        }
+
+        .app-preview {
+            flex: 1;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app-icon-preview {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .app-name-preview {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .app-url-preview {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .preview-features {
+            width: 100%;
+            text-align: left;
+            padding: 0 10px;
+        }
+
+        .preview-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .preview-feature-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .preview-label {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .preview-section {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .phone-mockup {
+                width: 280px;
+                height: 570px;
+            }
+
+            .form-section {
+                padding: 25px;
+            }
+
+            .color-picker-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AppForge</h1>
+            <p>Transform your website into a beautiful mobile app in minutes</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2>Create Your App</h2>
+                <p>Fill in the details below to generate your mobile app</p>
+
+                <form id="appForm">
+                    <div class="form-group">
+                        <label for="appName">App Name *</label>
+                        <input type="text" id="appName" placeholder="My Awesome App" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="websiteUrl">Website URL *</label>
+                        <input type="url" id="websiteUrl" placeholder="https://yourwebsite.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packageName">Package Name *</label>
+                        <input type="text" id="packageName" placeholder="com.yourcompany.app" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>App Logo (PNG/JPG)</label>
+                        <div class="file-upload">
+                            <input type="file" id="logoUpload" accept="image/*">
+                            <label for="logoUpload" class="file-upload-label">
+                                📁 Click to upload logo (512x512px recommended)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>App Colors</label>
+                        <div class="color-picker-group">
+                            <div>
+                                <label style="font-weight: normal; font-size: 0.85rem; margin-bottom: 5px;">Primary Color</label>
+                                <div class="color-input-wrapper">
+                                    <input type="color" id="primaryColor" value="#667eea">
+                                    <input type="text" id="primaryColorText" value="#667eea" readonly>
+                                </div>
+                            </div>
+                            <div>
+                                <label style="font-weight: normal; font-size: 0.85rem; margin-bottom: 5px;">Secondary Color</label>
+                                <div class="color-input-wrapper">
+                                    <input type="color" id="secondaryColor" value="#764ba2">
+                                    <input type="text" id="secondaryColorText" value="#764ba2" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="platform">Platform *</label>
+                        <select id="platform" required>
+                            <option value="android">Android</option>
+                            <option value="ios">iOS (Coming Soon)</option>
+                            <option value="both">Both (Coming Soon)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">🎉 Create My App</button>
+                </form>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <span>9:41</span>
+                            <span>📶 📡 🔋</span>
+                        </div>
+                        <div class="app-preview">
+                            <div class="app-icon-preview" id="iconPreview">📱</div>
+                            <div class="app-name-preview" id="namePreview">My Awesome App</div>
+                            <div class="app-url-preview" id="urlPreview">yourwebsite.com</div>
+                            
+                            <div class="preview-features">
+                                <div class="preview-feature">
+                                    <div class="preview-feature-icon" style="background: #e3f2fd; color: #2196f3;">⚡</div>
+                                    <span>Lightning Fast Loading</span>
+                                </div>
+                                <div class="preview-feature">
+                                    <div class="preview-feature-icon" style="background: #f3e5f5; color: #9c27b0;">📱</div>
+                                    <span>Native App Experience</span>
+                                </div>
+                                <div class="preview-feature">
+                                    <div class="preview-feature-icon" style="background: #e8f5e9; color: #4caf50;">🔔</div>
+                                    <span>Push Notifications</span>
+                                </div>
+                                <div class="preview-feature">
+                                    <div class="preview-feature-icon" style="background: #fff3e0; color: #ff9800;">🎨</div>
+                                    <span>Custom Branding</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="preview-label">✨ Live preview of your app</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Live preview updates
+        const appNameInput = document.getElementById('appName');
+        const websiteUrlInput = document.getElementById('websiteUrl');
+        const logoUploadInput = document.getElementById('logoUpload');
+        const primaryColorInput = document.getElementById('primaryColor');
+        const secondaryColorInput = document.getElementById('secondaryColor');
+        const primaryColorText = document.getElementById('primaryColorText');
+        const secondaryColorText = document.getElementById('secondaryColorText');
+        
+        const namePreview = document.getElementById('namePreview');
+        const urlPreview = document.getElementById('urlPreview');
+        const iconPreview = document.getElementById('iconPreview');
+
+        appNameInput.addEventListener('input', (e) => {
+            namePreview.textContent = e.target.value || 'My Awesome App';
+        });
+
+        websiteUrlInput.addEventListener('input', (e) => {
+            const url = e.target.value.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            urlPreview.textContent = url || 'yourwebsite.com';
+        });
+
+        primaryColorInput.addEventListener('input', (e) => {
+            primaryColorText.value = e.target.value;
+            iconPreview.style.background = `linear-gradient(135deg, ${e.target.value} 0%, ${secondaryColorInput.value} 100%)`;
+        });
+
+        secondaryColorInput.addEventListener('input', (e) => {
+            secondaryColorText.value = e.target.value;
+            iconPreview.style.background = `linear-gradient(135deg, ${primaryColorInput.value} 0%, ${e.target.value} 100%)`;
+        });
+
+        logoUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    iconPreview.style.backgroundImage = `url(${event.target.result})`;
+                    iconPreview.style.backgroundSize = 'cover';
+                    iconPreview.style.backgroundPosition = 'center';
+                    iconPreview.textContent = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission
+        document.getElementById('appForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                appName: appNameInput.value,
+                websiteUrl: websiteUrlInput.value,
+                packageName: document.getElementById('packageName').value,
+                primaryColor: primaryColorInput.value,
+                secondaryColor: secondaryColorInput.value,
+                platform: document.getElementById('platform').value,
+                email: document.getElementById('email').value
+            };
+
+            // For now, just show alert. Later, send to your backend
+            alert(`🎉 Thank you! We'll send your app to ${formData.email} soon!\n\nApp Details:\n- Name: ${formData.appName}\n- URL: ${formData.websiteUrl}\n- Platform: ${formData.platform}`);
+            
+            console.log('Form Data:', formData);
+            
+            // Here you would send this to your backend:
+            // fetch('/api/create-app', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(formData)
+            // });
+        });
+    </script>
+</body>
+</html>
